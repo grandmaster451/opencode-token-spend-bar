@@ -1,0 +1,19 @@
+> npm run test
+
+> opencode-token-spend-bar@1.0.0 test
+> vitest run
+
+RUN  v1.6.1 C:/Users/chist/opencode-token-spend-bar
+
+✓ test/domain/row-state.test.ts  (4 tests)
+✓ test/domain/provider.test.ts  (3 tests)
+✓ test/domain/formatter.test.ts  (5 tests)
+✓ test/domain/period.test.ts  (3 tests)
+✓ test/state/kv-ledger.test.ts  (6 tests)
+✓ test/adapters/history-scanner.test.ts  (4 tests)
+✓ test/services/usage-aggregator-edge.test.ts  (3 tests)
+✓ test/services/usage-aggregator.test.ts  (6 tests)
+
+Test Files  8 passed (8)
+Tests  34 passed (34)
+Duration  340ms

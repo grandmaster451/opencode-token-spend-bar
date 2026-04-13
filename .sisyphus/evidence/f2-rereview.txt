@@ -1,0 +1,20 @@
+VERDICT: APPROVE
+
+F2 re-review completed on 2026-04-13.
+
+Checklist
+- [x] No `any` types in codebase (explore audit found source uses `unknown` + type guards; no remaining `any` in src/)
+- [x] No duplicated business logic (centralized in `src/domain/tokens.ts`, `src/domain/provider.ts`, `src/domain/row-state.ts`)
+- [x] Database path is configurable (`src/adapters/history-scanner.ts` resolves `OPENCODE_DB_PATH` / `TOKEN_SPEND_BAR_OPENCODE_DB_PATH`, then XDG fallback)
+- [x] Errors are logged with `console.warn` (warn logging present in `src/adapters/history-scanner.ts`, `src/services/usage-aggregator.ts`, `src/state/kv-ledger.ts`)
+- [x] Fingerprint includes cost (`src/services/usage-aggregator.ts`: `provider:timestamp:tokens:costOrNull`)
+- [x] Test helpers centralized in `test/helpers/` (`mock-api.ts`, `mock-kv.ts`, `test-utils.ts`)
+- [x] All 64 tests pass (`npm test` => 21 files, 64 tests passed)
+- [x] Build succeeds (`npm run build` passed)
+- [x] LSP diagnostics clean (`src`: 0 diagnostics, `test`: 0 diagnostics)
+
+Evidence
+- Domain centralization confirmed by repository audit for prior F2 issues.
+- Test output: `64 passed`.
+- Build output: `Build success` for ESM and DTS.
+- LSP diagnostics: clean for `src` and `test`.

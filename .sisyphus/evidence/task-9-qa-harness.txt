@@ -1,0 +1,71 @@
+
+> opencode-token-spend-bar@1.0.0 qa:full
+> node scripts/qa-full-chain.js
+
+
+> opencode-token-spend-bar@1.0.0 test
+> vitest run
+
+
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/chist/opencode-token-spend-bar[39m
+
+ [32mтЬУ[39m test/components/session-spend-widget-chatgpt-plus.test.tsx [2m ([22m[2m5 tests[22m[2m)[22m[90m 2[2mms[22m[39m
+ [32mтЬУ[39m test/domain/period.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 3[2mms[22m[39m
+ [32mтЬУ[39m test/components/session-spend-widget.test.tsx [2m ([22m[2m9 tests[22m[2m)[22m[90m 2[2mms[22m[39m
+ [32mтЬУ[39m test/domain/row-state.test.ts [2m ([22m[2m4 tests[22m[2m)[22m[90m 3[2mms[22m[39m
+ [32mтЬУ[39m test/state/kv-ledger.test.ts [2m ([22m[2m6 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32mтЬУ[39m test/adapters/history-scanner.test.ts [2m ([22m[2m4 tests[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32mтЬУ[39m test/services/usage-aggregator-edge.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32mтЬУ[39m test/services/usage-aggregator.test.ts [2m ([22m[2m6 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32mтЬУ[39m test/integration/provider-switch-restart.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/chatgpt-plus-only.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/month-rollover.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/corrupt-kv-rebuild.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/missing-cost.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/mixed-providers.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32mтЬУ[39m test/integration/live-event-flow.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32mтЬУ[39m test/domain/formatter.test.ts [2m ([22m[2m5 tests[22m[2m)[22m[90m 3[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/narrow-width.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/opencode-go-only.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/zero-data.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32mтЬУ[39m test/domain/provider.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 2[2mms[22m[39m
+ [32mтЬУ[39m test/fixtures/minimax-only.test.ts [2m ([22m[2m1 test[22m[2m)[22m[90m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m21 passed[39m[22m[90m (21)[39m
+[2m      Tests [22m [1m[32m61 passed[39m[22m[90m (61)[39m
+[2m   Start at [22m 22:04:21
+[2m   Duration [22m 601ms[2m (transform 734ms, setup 1ms, collect 1.67s, tests 109ms, environment 4ms, prepare 2.81s)[22m
+
+
+> opencode-token-spend-bar@1.0.0 build
+> tsup src/index.tsx --format esm --dts --external '@opencode-ai/*' --external '@opentui/*' --external 'solid-js'
+
+[34mCLI[39m Building entry: src/index.tsx
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.5.1
+[34mCLI[39m Target: es2022
+[34mESM[39m Build start
+[32mESM[39m [1mdist\index.js [22m[32m49.64 KB[39m
+[32mESM[39m тЪбя╕П Build success in 23ms
+[34mDTS[39m Build start
+[32mDTS[39m тЪбя╕П Build success in 730ms
+[32mDTS[39m [1mdist\index.d.ts [22m[32m293.00 B[39m
+npm notice
+npm notice package: opencode-token-spend-bar@1.0.0
+npm notice Tarball Contents
+npm notice 3.6kB README.md
+npm notice 293B dist/index.d.ts
+npm notice 50.8kB dist/index.js
+npm notice 53B examples/opencode.json.example
+npm notice 1.4kB package.json
+npm notice Tarball Details
+npm notice name: opencode-token-spend-bar
+npm notice version: 1.0.0
+npm notice filename: opencode-token-spend-bar-1.0.0.tgz
+npm notice package size: 14.1 kB
+npm notice unpacked size: 56.2 kB
+npm notice shasum: 05d7105c0d039361603775038530b97a924fb213
+npm notice integrity: sha512-a4OrRrO5iq65/[...]LdYwID3PxnTBw==
+npm notice total files: 5
+npm notice
+opencode-token-spend-bar-1.0.0.tgz

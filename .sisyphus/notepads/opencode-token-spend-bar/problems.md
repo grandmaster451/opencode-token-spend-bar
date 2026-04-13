@@ -1,0 +1,2 @@
+- 2026-04-13: `src/adapters/history-scanner.ts` still embeds a machine-specific OpenCode SQLite path (`C:\Users\chist\.local\share\opencode\opencode.db`), uses `Record<string, any>` in `safeParseJson`, and swallows DB scan failures by returning an empty result set without surfacing diagnostics.
+- 2026-04-13: `UsageAggregator.createFingerprint()` currently uses only `provider:timestamp:tokens`, which can collide for distinct records and is not directly covered by tests.

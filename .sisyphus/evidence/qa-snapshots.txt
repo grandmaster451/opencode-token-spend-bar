@@ -1,0 +1,22 @@
+
+> opencode-token-spend-bar@1.0.0 qa:fixtures
+> vitest run test/fixtures/ --reporter=verbose --update
+
+
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/chist/opencode-token-spend-bar[39m
+
+ [32m✓[39m test/fixtures/narrow-width.test.ts[2m > [22mfixture: narrow width[2m > [22mrenders compact rows for terminals narrower than 40 columns
+ [32m✓[39m test/fixtures/chatgpt-plus-only.test.ts[2m > [22mfixture: chatgpt plus only[2m > [22maggregates a pure ChatGPT Plus month without showing currency
+ [32m✓[39m test/fixtures/missing-cost.test.ts[2m > [22mfixture: missing cost[2m > [22mhides currency for metered providers when any record has null cost
+ [32m✓[39m test/fixtures/month-rollover.test.ts[2m > [22mfixture: month rollover[2m > [22mrebuilds when the active month changes
+ [32m✓[39m test/fixtures/zero-data.test.ts[2m > [22mfixture: zero data[2m > [22mreturns the stable empty widget state
+ [32m✓[39m test/fixtures/opencode-go-only.test.ts[2m > [22mfixture: opencode-go only[2m > [22maggregates a pure OpenCode Go month
+ [32m✓[39m test/fixtures/minimax-only.test.ts[2m > [22mfixture: minimax only[2m > [22maggregates a pure MiniMax month
+ [32m✓[39m test/fixtures/corrupt-kv-rebuild.test.ts[2m > [22mfixture: corrupt kv rebuild[2m > [22mrebuilds from history when the persisted aggregate is corrupt
+ [32m✓[39m test/fixtures/mixed-providers.test.ts[2m > [22mfixture: mixed providers[2m > [22mkeeps all three providers separated in fixed order
+
+[2m Test Files [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 22:08:55
+[2m   Duration [22m 320ms[2m (transform 213ms, setup 1ms, collect 792ms, tests 43ms, environment 1ms, prepare 945ms)[22m
+

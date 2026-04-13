@@ -1,0 +1,26 @@
+npm install && npm run test && npm run build
+
+added 334 packages, and audited 335 packages in 1m
+
+> opencode-token-spend-bar@1.0.0 test
+> vitest run
+
+ RUN  v1.6.1 C:/Users/chist/opencode-token-spend-bar
+
+ ✓ test/domain/row-state.test.ts  (4 tests)
+ ✓ test/domain/formatter.test.ts  (5 tests)
+ ✓ test/domain/provider.test.ts  (3 tests)
+ ✓ test/domain/period.test.ts  (3 tests)
+
+ Test Files  4 passed (4)
+      Tests  15 passed (15)
+
+> opencode-token-spend-bar@1.0.0 build
+> tsup src/index.tsx --format esm --dts --external '@opencode-ai/*' --external '@opentui/*' --external 'solid-js'
+
+ESM Build success
+DTS Build success
+
+LSP diagnostics:
+- src: 0 diagnostics
+- test: 0 diagnostics
