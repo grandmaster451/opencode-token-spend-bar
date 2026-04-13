@@ -1,0 +1,66 @@
+{
+  "name": "opencode-token-spend-bar",
+  "version": "1.0.0",
+  "description": "A reusable TUI plugin for OpenCode that displays token spending for MiniMax API, OpenCode Go, and ChatGPT Plus",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm --dts --external '@opencode-ai/*' --external '@opentui/*' --external 'solid-js'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "qa:tui-snapshot": "node scripts/qa-tui-snapshot.js",
+    "qa:fixtures": "vitest run test/fixtures/ --reporter=verbose",
+    "qa:full": "node scripts/qa-full-chain.js",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "opencode",
+    "plugin",
+    "tui",
+    "token-usage",
+    "minimax",
+    "chatgpt",
+    "cost-tracking"
+  ],
+  "author": "OpenCode Community <community@opencode.ai>",
+  "license": "MIT",
+  "homepage": "https://github.com/YOUR_USERNAME/opencode-token-spend-bar#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_USERNAME/opencode-token-spend-bar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/opencode-token-spend-bar/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.3.16",
+    "@opencode-ai/sdk": "^1.0.0",
+    "@opentui/core": "^0.1.99",
+    "@opentui/solid": "^0.1.99",
+    "solid-js": "^1.8.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/node": "^20.0.0",
+    "better-sqlite3": "^9.4.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ]
+}

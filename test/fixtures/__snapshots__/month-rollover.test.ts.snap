@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture: month rollover > rebuilds when the active month changes 1`] = `
+"month=2024-05
+MM  1.0k  $1.00
+OCG  0
+GPT+  0
+---
+month=2024-05
+MM  0
+OCG  500  $2.00
+GPT+  0"
+`;

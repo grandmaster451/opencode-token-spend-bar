@@ -1,0 +1,73 @@
+name: Bug Report
+description: Create a report to help us improve
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        
+  - type: input
+    id: version
+    attributes:
+      label: Plugin Version
+      description: What version of opencode-token-spend-bar are you using?
+      placeholder: "e.g., 1.0.0"
+    validations:
+      required: true
+      
+  - type: input
+    id: opencode-version
+    attributes:
+      label: OpenCode Version
+      description: What version of OpenCode are you running?
+      placeholder: "e.g., 1.3.16"
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+      
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug
+      placeholder: "The widget shows..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: "The widget should..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Open OpenCode
+        2. Start a session
+        3. ...
+    validations:
+      required: true
+      
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code.
+      render: shell

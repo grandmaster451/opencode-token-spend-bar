@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture: opencode-go only > aggregates a pure OpenCode Go month 1`] = `
+"fixture=opencode-go-only
+description=Pure OpenCode Go usage with metered cost
+month=2024-04
+rows:
+minimax|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
+opencode-go|tokens=3500|tokensFormatted=3.5k|cost=2.4|costFormatted=$2.40|showCost=true
+chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
+normal:
+MM  0
+OCG  3.5k  $2.40
+GPT+  0
+narrow:
+MM:0
+OCG:3.5k/$2.40
+GPT+:0"
+`;

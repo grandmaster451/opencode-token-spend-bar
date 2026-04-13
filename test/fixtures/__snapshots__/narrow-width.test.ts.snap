@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture: narrow width > renders compact rows for terminals narrower than 40 columns 1`] = `
+"fixture=narrow-width
+description=Compact rendering for sub-40 column terminals
+month=2024-04
+rows:
+minimax|tokens=1200|tokensFormatted=1.2k|cost=0.45|costFormatted=$0.45|showCost=true
+opencode-go|tokens=3000|tokensFormatted=3.0k|cost=2.25|costFormatted=$2.25|showCost=true
+chatgpt-plus|tokens=2500|tokensFormatted=2.5k|cost=null|costFormatted=null|showCost=false
+normal:
+MM  1.2k  $0.45
+OCG  3.0k  $2.25
+GPT+  2.5k
+narrow:
+MM:1.2k/$0.45
+OCG:3.0k/$2.25
+GPT+:2.5k"
+`;

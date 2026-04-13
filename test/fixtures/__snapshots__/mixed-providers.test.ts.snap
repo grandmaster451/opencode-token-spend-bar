@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture: mixed providers > keeps all three providers separated in fixed order 1`] = `
+"fixture=mixed-providers
+description=Mixed provider usage across the fixed three-row widget
+month=2024-04
+rows:
+minimax|tokens=100|tokensFormatted=100|cost=0.5|costFormatted=$0.50|showCost=true
+opencode-go|tokens=200|tokensFormatted=200|cost=1.25|costFormatted=$1.25|showCost=true
+chatgpt-plus|tokens=2500|tokensFormatted=2.5k|cost=null|costFormatted=null|showCost=false
+normal:
+MM  100  $0.50
+OCG  200  $1.25
+GPT+  2.5k
+narrow:
+MM:100/$0.50
+OCG:200/$1.25
+GPT+:2.5k"
+`;
