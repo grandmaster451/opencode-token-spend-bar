@@ -5,15 +5,15 @@ exports[`fixture: chatgpt plus only > aggregates a pure ChatGPT Plus month witho
 description=Pure ChatGPT Plus usage where spend is token-only
 month=2024-04
 rows:
-minimax|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
-opencode-go|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
-chatgpt-plus|tokens=3000|tokensFormatted=3.0k|cost=null|costFormatted=null|showCost=false
+minimax|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
+opencode-go|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
+chatgpt-plus|tokens=3000|tokensFormatted=3 000|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=3 000|percentage=null
 normal:
 MM  0
 OCG  0
-GPT+  3.0k
+GPT+  3 000
 narrow:
 MM:0
 OCG:0
-GPT+:3.0k"
+GPT+:3 000"
 `;

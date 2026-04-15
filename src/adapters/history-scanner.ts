@@ -42,7 +42,8 @@ type SqlRow = {
 type JsonObject = Record<string, unknown>;
 
 export function getOpencodeDbPath(): string {
-  const configuredPath = process.env.OPENCODE_DB_PATH ?? process.env.TOKEN_SPEND_BAR_OPENCODE_DB_PATH;
+  const configuredPath =
+    process.env.OPENCODE_DB_PATH ?? process.env.TOKEN_SPEND_BAR_OPENCODE_DB_PATH;
 
   if (configuredPath && configuredPath.trim().length > 0) {
     return configuredPath;
@@ -68,11 +69,11 @@ export function queryCurrentMonthMessages(db: Pick<Database, 'prepare'>): Messag
         FROM message
         WHERE json_extract(data, '$.time.created') >= ?
           AND json_extract(data, '$.time.created') < ?
-      `,
+      `
     )
     .all(start.getTime(), end.getTime()) as SqlRow[];
 
-  return rows.flatMap((row) => {
+  return rows.flatMap(row => {
     const parsed = safeParseJson(row.data);
     if (!parsed) {
       return [];
@@ -88,21 +89,23 @@ export function queryCurrentMonthMessages(db: Pick<Database, 'prepare'>): Messag
       return [];
     }
 
-    return [{
-      id: row.id,
-      sessionID: row.sessionID,
-      role,
-      providerID,
-      cost: toNullableNumber(parsed.cost),
-      tokens: toTokenPayload(parsed.tokens),
-      timestamp,
-    }];
+    return [
+      {
+        id: row.id,
+        sessionID: row.sessionID,
+        role,
+        providerID,
+        cost: toNullableNumber(parsed.cost),
+        tokens: toTokenPayload(parsed.tokens),
+        timestamp,
+      },
+    ];
   });
 }
 
 export function queryStepFinishParts(
   db: Pick<Database, 'prepare'>,
-  messageIds: string[],
+  messageIds: string[]
 ): StepFinishRecord[] {
   if (messageIds.length === 0) {
     return [];
@@ -118,21 +121,23 @@ export function queryStepFinishParts(
         FROM part
         WHERE json_extract(data, '$.type') = 'step-finish'
           AND message_id IN (${placeholders})
-      `,
+      `
     )
     .all(...messageIds) as SqlRow[];
 
-  return rows.flatMap((row) => {
+  return rows.flatMap(row => {
     const parsed = safeParseJson(row.data);
     if (!parsed || row.messageID === undefined) {
       return [];
     }
 
-    return [{
-      messageID: row.messageID,
-      cost: toNullableNumber(parsed.cost),
-      tokens: toTokenPayload(parsed.tokens),
-    }];
+    return [
+      {
+        messageID: row.messageID,
+        cost: toNullableNumber(parsed.cost),
+        tokens: toTokenPayload(parsed.tokens),
+      },
+    ];
   });
 }
 
@@ -176,11 +181,11 @@ export function scanCurrentMonthHistory(): UsageRecord[] {
     const messages = queryCurrentMonthMessages(db);
     const stepFinishParts = queryStepFinishParts(
       db,
-      messages.map((message) => message.id),
+      messages.map(message => message.id)
     );
     const stepFinishByMessage = groupStepFinishParts(stepFinishParts);
 
-    return messages.flatMap((message) => {
+    return messages.flatMap(message => {
       const parts = stepFinishByMessage.get(message.id);
       const mergedMessage = parts ? mergeMessageUsage(message, parts) : message;
       const normalized = normalizeMessageRecord(mergedMessage);
@@ -188,13 +193,19 @@ export function scanCurrentMonthHistory(): UsageRecord[] {
       return normalized ? [normalized] : [];
     });
   } catch (error) {
-    console.warn('[token-spend-bar] Failed to query usage history from the OpenCode database.', error);
+    console.warn(
+      '[token-spend-bar] Failed to query usage history from the OpenCode database.',
+      error
+    );
     return [];
   } finally {
     try {
       db.close();
     } catch (error) {
-      console.warn('[token-spend-bar] Failed to close the OpenCode database connection cleanly.', error);
+      console.warn(
+        '[token-spend-bar] Failed to close the OpenCode database connection cleanly.',
+        error
+      );
     }
   }
 }
@@ -217,9 +228,7 @@ function groupStepFinishParts(parts: StepFinishRecord[]): Map<string, StepFinish
 
 function mergeMessageUsage(message: MessageRecord, parts: StepFinishRecord[]): MessageRecord {
   const totalTokens = parts.reduce((sum, part) => sum + getTokenCount(part.tokens), 0);
-  const costs = parts
-    .map((part) => part.cost)
-    .filter((cost): cost is number => cost !== null);
+  const costs = parts.map(part => part.cost).filter((cost): cost is number => cost !== null);
 
   return {
     ...message,

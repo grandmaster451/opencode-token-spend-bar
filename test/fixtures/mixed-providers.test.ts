@@ -16,19 +16,24 @@ describe('fixture: mixed providers', () => {
     const result = await runFixture({
       title: 'mixed-providers',
       description: 'Mixed provider usage across the fixed three-row widget',
-      historyRecords: [
+      liveRecords: [
         { provider: 'chatgpt-plus', tokens: 2500, cost: null, timestamp: 401 },
         { provider: 'minimax', tokens: 100, cost: 0.5, timestamp: 402 },
+        { provider: 'opencode-go', tokens: 200, cost: 1.25, timestamp: 403 },
       ],
-      liveRecords: [{ provider: 'opencode-go', tokens: 200, cost: 1.25, timestamp: 403 }],
     });
 
     expect(result.viewModel.rows).toEqual([
       expect.objectContaining({ bucket: 'minimax', tokens: 100, cost: 0.5, showCost: true }),
       expect.objectContaining({ bucket: 'opencode-go', tokens: 200, cost: 1.25, showCost: true }),
-      expect.objectContaining({ bucket: 'chatgpt-plus', tokens: 2500, cost: null, showCost: false }),
+      expect.objectContaining({
+        bucket: 'chatgpt-plus',
+        tokens: 2500,
+        cost: null,
+        showCost: false,
+      }),
     ]);
-    expect(result.normalLines).toEqual(['MM  100  $0.50', 'OCG  200  $1.25', 'GPT+  2.5k']);
+    expect(result.normalLines).toEqual(['MM  100  ($0.50)', 'OCG  200  ($1.25)', 'GPT+  2 500']);
     expect(result.snapshot).toMatchSnapshot();
   });
 });

@@ -5,15 +5,15 @@ exports[`fixture: corrupt kv rebuild > rebuilds from history when the persisted 
 description=Corrupted KV state triggers a safe history rebuild
 month=2024-04
 rows:
-minimax|tokens=900|tokensFormatted=900|cost=0.9|costFormatted=$0.90|showCost=true
-opencode-go|tokens=300|tokensFormatted=300|cost=1.1|costFormatted=$1.10|showCost=true
-chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
+minimax|tokens=900|tokensFormatted=900|cost=0.9|costFormatted=$0.90|showCost=true|remaining=null|remainingFormatted=900|percentage=null
+opencode-go|tokens=300|tokensFormatted=300|cost=1.1|costFormatted=$1.10|showCost=true|remaining=null|remainingFormatted=300|percentage=null
+chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
 normal:
-MM  900  $0.90
-OCG  300  $1.10
+MM  900  ($0.90)
+OCG  300  ($1.10)
 GPT+  0
 narrow:
-MM:900/$0.90
-OCG:300/$1.10
+MM:900/($0.90)
+OCG:300/($1.10)
 GPT+:0"
 `;

@@ -5,15 +5,15 @@ exports[`fixture: minimax only > aggregates a pure MiniMax month 1`] = `
 description=Pure MiniMax usage with metered cost
 month=2024-04
 rows:
-minimax|tokens=2000|tokensFormatted=2.0k|cost=0.8|costFormatted=$0.80|showCost=true
-opencode-go|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
-chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
+minimax|tokens=2000|tokensFormatted=2 000|cost=0.8|costFormatted=$0.80|showCost=true|remaining=null|remainingFormatted=2 000|percentage=null
+opencode-go|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
+chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
 normal:
-MM  2.0k  $0.80
+MM  2 000  ($0.80)
 OCG  0
 GPT+  0
 narrow:
-MM:2.0k/$0.80
+MM:2 000/($0.80)
 OCG:0
 GPT+:0"
 `;

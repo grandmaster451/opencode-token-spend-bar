@@ -13,16 +13,16 @@ import { MockKV } from './mock-kv';
 
 export { MockKV };
 
-type SessionPromptRightRenderer = (
+type SidebarContentRenderer = (
   ctx: TuiSlotContext,
-  props: TuiHostSlotMap['session_prompt_right'],
+  props: TuiHostSlotMap['sidebar_content']
 ) => JSX.Element;
 
 export type MockPluginHarness = {
   api: TuiPluginApi;
   kv: MockKV;
   emitMessageUpdated: (message: AssistantMessage) => void;
-  renderSessionPromptRight: (props?: Partial<TuiHostSlotMap['session_prompt_right']>) => JSX.Element;
+  renderSidebarContent: (props?: Partial<TuiHostSlotMap['sidebar_content']>) => JSX.Element;
   getRenderRequestCount: () => number;
   dispose: () => Promise<void>;
 };
@@ -33,7 +33,7 @@ export function createMockPluginHarness(kv = new MockKV()): MockPluginHarness {
   const messageUpdatedHandlers = new Set<(event: EventMessageUpdated) => void>();
 
   let renderRequests = 0;
-  let slotRenderer: SessionPromptRightRenderer | undefined;
+  let slotRenderer: SidebarContentRenderer | undefined;
   let slotRegistrationCount = 0;
 
   const api = {
@@ -46,7 +46,7 @@ export function createMockPluginHarness(kv = new MockKV()): MockPluginHarness {
     event: {
       on: <Type extends Event['type']>(
         type: Type,
-        handler: (event: Extract<Event, { type: Type }>) => void,
+        handler: (event: Extract<Event, { type: Type }>) => void
       ) => {
         if (type !== 'message.updated') {
           return () => undefined;
@@ -61,8 +61,8 @@ export function createMockPluginHarness(kv = new MockKV()): MockPluginHarness {
       },
     },
     slots: {
-      register: (plugin) => {
-        const renderer = plugin.slots?.session_prompt_right;
+      register: plugin => {
+        const renderer = plugin.slots?.sidebar_content;
         if (renderer) {
           slotRenderer = renderer;
         }
@@ -98,9 +98,9 @@ export function createMockPluginHarness(kv = new MockKV()): MockPluginHarness {
         handler(event);
       }
     },
-    renderSessionPromptRight(props = {}) {
+    renderSidebarContent(props = {}) {
       if (!slotRenderer) {
-        throw new Error('session_prompt_right slot was not registered');
+        throw new Error('sidebar_content slot was not registered');
       }
 
       return slotRenderer(
@@ -110,7 +110,7 @@ export function createMockPluginHarness(kv = new MockKV()): MockPluginHarness {
         {
           session_id: 'session-1',
           ...props,
-        },
+        }
       );
     },
     getRenderRequestCount() {
@@ -126,7 +126,9 @@ export function createMockPluginHarness(kv = new MockKV()): MockPluginHarness {
   };
 }
 
-export function createAssistantMessage(overrides: Partial<AssistantMessage> = {}): AssistantMessage {
+export function createAssistantMessage(
+  overrides: Partial<AssistantMessage> = {}
+): AssistantMessage {
   const base: AssistantMessage = {
     id: 'message-1',
     sessionID: 'session-1',

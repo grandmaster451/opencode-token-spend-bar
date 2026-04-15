@@ -62,7 +62,7 @@ describe('history scanner adapter', () => {
     expect(prepare).toHaveBeenCalledOnce();
     expect(all).toHaveBeenCalledWith(
       new Date(2026, 3, 1, 0, 0, 0, 0).getTime(),
-      new Date(2026, 4, 1, 0, 0, 0, 0).getTime(),
+      new Date(2026, 4, 1, 0, 0, 0, 0).getTime()
     );
     expect(records).toEqual([
       {
@@ -154,7 +154,7 @@ describe('history scanner adapter', () => {
     expect(ensureDbExists()).toBe(false);
     expect(scanCurrentMonthHistory()).toEqual([]);
     expect(warn).toHaveBeenCalledWith(
-      '[token-spend-bar] OpenCode database not found at C:\\Users\\chist\\.local\\share\\opencode\\opencode.db.',
+      '[token-spend-bar] OpenCode database not found at C:\\Users\\chist\\.local\\share\\opencode\\opencode.db.'
     );
   });
 
@@ -172,7 +172,7 @@ describe('history scanner adapter', () => {
     expect(scanCurrentMonthHistory()).toEqual([]);
     expect(warn).toHaveBeenCalledWith(
       '[token-spend-bar] Failed to open OpenCode database at Z:\\definitely-missing\\opencode.db.',
-      expect.any(Error),
+      expect.any(Error)
     );
   });
 });

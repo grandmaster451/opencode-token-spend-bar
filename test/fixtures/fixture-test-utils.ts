@@ -66,10 +66,10 @@ export function buildFixtureResult(
   title: string,
   description: string,
   kv: MockKV,
-  viewModel: WidgetViewModel,
+  viewModel: WidgetViewModel
 ): FixtureResult {
-  const normalLines = viewModel.rows.map((row) => formatRow(row, false));
-  const narrowLines = viewModel.rows.map((row) => formatRow(row, true));
+  const normalLines = viewModel.rows.map(row => formatRow(row, false));
+  const narrowLines = viewModel.rows.map(row => formatRow(row, true));
 
   return {
     kv,
@@ -98,12 +98,12 @@ function formatFixtureSnapshot(
   description: string,
   viewModel: WidgetViewModel,
   normalLines: string[],
-  narrowLines: string[],
+  narrowLines: string[]
 ): string {
   const rows = viewModel.rows
     .map(
-      (row) =>
-        `${row.bucket}|tokens=${row.tokens}|tokensFormatted=${row.tokensFormatted}|cost=${row.cost ?? 'null'}|costFormatted=${row.costFormatted ?? 'null'}|showCost=${row.showCost}`,
+      row =>
+        `${row.bucket}|tokens=${row.tokens}|tokensFormatted=${row.tokensFormatted}|cost=${row.cost ?? 'null'}|costFormatted=${row.costFormatted ?? 'null'}|showCost=${row.showCost}|remaining=${row.remaining ?? 'null'}|remainingFormatted=${row.remainingFormatted}|percentage=${row.percentage ?? 'null'}`
     )
     .join('\n');
 

@@ -35,8 +35,20 @@ describe('usage aggregator edge cases', () => {
     aggregator.processRecord({ provider: 'opencode-go', tokens: 125, cost: null, timestamp: 2 });
 
     expect(aggregator.getViewModel().rows.slice(0, 2)).toEqual([
-      expect.objectContaining({ bucket: 'minimax', tokens: 250, cost: null, costFormatted: null, showCost: false }),
-      expect.objectContaining({ bucket: 'opencode-go', tokens: 125, cost: null, costFormatted: null, showCost: false }),
+      expect.objectContaining({
+        bucket: 'minimax',
+        tokens: 250,
+        cost: null,
+        costFormatted: null,
+        showCost: false,
+      }),
+      expect.objectContaining({
+        bucket: 'opencode-go',
+        tokens: 125,
+        cost: null,
+        costFormatted: null,
+        showCost: false,
+      }),
     ]);
   });
 
@@ -48,7 +60,12 @@ describe('usage aggregator edge cases', () => {
 
     const aggregator = createAggregator(kv);
     await aggregator.initialize();
-    aggregator.processRecord({ provider: 'anthropic', tokens: 500, cost: 5, timestamp: 2 } as never);
+    aggregator.processRecord({
+      provider: 'anthropic',
+      tokens: 500,
+      cost: 5,
+      timestamp: 2,
+    } as never);
 
     expect(aggregator.getViewModel().rows).toEqual([
       expect.objectContaining({ bucket: 'minimax', tokens: 0 }),

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   LEDGER_SCHEMA_VERSION,
   KV_NAMESPACE_PREFIX,
+  MAX_PROCESSED_FINGERPRINTS,
   buildLedgerKey,
   createLedger,
   getCurrentMonthKey,
@@ -29,7 +30,7 @@ describe('kv ledger', () => {
     ledger.save();
 
     expect(buildLedgerKey('2024-04', 'aggregate', 'minimax')).toBe(
-      'token-spend-bar:v1:2024-04:aggregate:minimax',
+      'token-spend-bar:v1:2024-04:aggregate:minimax'
     );
     expect([...kv.store.keys()]).toEqual(
       expect.arrayContaining([
@@ -38,7 +39,7 @@ describe('kv ledger', () => {
         'token-spend-bar:v1:2024-04:aggregate:minimax',
         'token-spend-bar:v1:2024-04:processed:message-1',
         'token-spend-bar:v1:2024-04:meta:lastRebuild',
-      ]),
+      ])
     );
   });
 
@@ -99,7 +100,11 @@ describe('kv ledger', () => {
     kv.set(`${KV_NAMESPACE_PREFIX}:meta:currentMonth`, '2024-04');
     kv.set(buildLedgerKey('2024-04', 'meta', 'aggregateProviders'), ['minimax']);
     kv.set(buildLedgerKey('2024-04', 'meta', 'processedFingerprints'), ['message-1']);
-    kv.set(buildLedgerKey('2024-04', 'aggregate', 'minimax'), { month: '2024-04', provider: 'minimax', tokens: 'bad' });
+    kv.set(buildLedgerKey('2024-04', 'aggregate', 'minimax'), {
+      month: '2024-04',
+      provider: 'minimax',
+      tokens: 'bad',
+    });
 
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const ledger = createLedger(kv);
@@ -119,5 +124,65 @@ describe('kv ledger', () => {
 
     expect(ledger.shouldRebuild()).toBe(true);
     expect(ledger.getAggregates()).toEqual([]);
+  });
+
+  describe('processedFingerprints cap', () => {
+    it('evicts oldest entry when cap is reached', () => {
+      const kv = new MockKV();
+      const ledger = createLedger(kv);
+
+      for (let i = 0; i < MAX_PROCESSED_FINGERPRINTS; i++) {
+        ledger.markRecordProcessed(`fingerprint-${i}`);
+      }
+      ledger.save();
+
+      expect(ledger.isRecordProcessed('fingerprint-0')).toBe(true);
+
+      ledger.markRecordProcessed(`fingerprint-${MAX_PROCESSED_FINGERPRINTS}`);
+      ledger.save();
+
+      expect(ledger.isRecordProcessed('fingerprint-0')).toBe(false);
+      expect(ledger.isRecordProcessed(`fingerprint-${MAX_PROCESSED_FINGERPRINTS}`)).toBe(true);
+    });
+
+    it('maintains Set size at cap after eviction', () => {
+      const kv = new MockKV();
+      const ledger = createLedger(kv);
+
+      for (let i = 0; i < MAX_PROCESSED_FINGERPRINTS + 100; i++) {
+        ledger.markRecordProcessed(`fingerprint-${i}`);
+      }
+      ledger.save();
+
+      const reloaded = createLedger(kv);
+      expect(reloaded.isRecordProcessed(`fingerprint-${MAX_PROCESSED_FINGERPRINTS + 99}`)).toBe(
+        true
+      );
+    });
+
+    it('deduplication still works after eviction', () => {
+      const kv = new MockKV();
+      const ledger = createLedger(kv);
+
+      for (let i = 0; i < MAX_PROCESSED_FINGERPRINTS + 50; i++) {
+        ledger.markRecordProcessed(`fingerprint-${i}`);
+      }
+
+      ledger.markRecordProcessed('fingerprint-0');
+      ledger.markRecordProcessed('fingerprint-1');
+      ledger.save();
+
+      const reloaded = createLedger(kv);
+      // After re-adding, 0 and 1 should be at the end (most recently used) - not evicted
+      expect(reloaded.isRecordProcessed('fingerprint-0')).toBe(true);
+      expect(reloaded.isRecordProcessed('fingerprint-1')).toBe(true);
+      // 50 and 51 were evicted to make room for 0 and 1
+      expect(reloaded.isRecordProcessed('fingerprint-50')).toBe(false);
+      expect(reloaded.isRecordProcessed('fingerprint-51')).toBe(false);
+      // 10049 should still be present
+      expect(reloaded.isRecordProcessed(`fingerprint-${MAX_PROCESSED_FINGERPRINTS + 49}`)).toBe(
+        true
+      );
+    });
   });
 });

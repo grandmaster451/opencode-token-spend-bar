@@ -4,6 +4,7 @@ import { isProviderBucket, type ProviderBucket } from '../domain/provider';
 
 export const KV_NAMESPACE_PREFIX = 'token-spend-bar:v1';
 export const LEDGER_SCHEMA_VERSION = 1;
+export const MAX_PROCESSED_FINGERPRINTS = 10_000;
 
 const SCHEMA_VERSION_KEY = `${KV_NAMESPACE_PREFIX}:schema:version`;
 const ACTIVE_MONTH_KEY = `${KV_NAMESPACE_PREFIX}:meta:currentMonth`;
@@ -22,6 +23,7 @@ export type LedgerState = {
   currentMonth: string;
   aggregates: MonthlyAggregate[];
   processedFingerprints: Set<string>;
+  fingerprintOrder: string[]; // Parallel array for LRU ordering
 };
 
 export type Ledger = {
@@ -54,15 +56,30 @@ export function createLedger(kv: TuiKV): Ledger {
 
   return {
     isRecordProcessed(fingerprint: string): boolean {
-      return state.processedFingerprints.has(fingerprint);
+      // fingerprintOrder is the source of truth for what's currently tracked
+      return state.fingerprintOrder.includes(fingerprint);
     },
 
     markRecordProcessed(fingerprint: string): void {
+      // Remove if already exists (will be re-added at end)
+      const idx = state.fingerprintOrder.indexOf(fingerprint);
+      if (idx !== -1) {
+        state.fingerprintOrder.splice(idx, 1);
+      }
+      state.fingerprintOrder.push(fingerprint);
       state.processedFingerprints.add(fingerprint);
+
+      // Evict oldest if over cap (from fingerprintOrder, the source of truth)
+      if (state.fingerprintOrder.length > MAX_PROCESSED_FINGERPRINTS) {
+        const evicted = state.fingerprintOrder.shift();
+        if (evicted) {
+          state.processedFingerprints.delete(evicted);
+        }
+      }
     },
 
     updateAggregate(provider: ProviderBucket, tokens: number, cost: number | null): void {
-      const existing = state.aggregates.find((aggregate) => aggregate.provider === provider);
+      const existing = state.aggregates.find(aggregate => aggregate.provider === provider);
 
       if (!existing) {
         state.aggregates.push({
@@ -79,7 +96,7 @@ export function createLedger(kv: TuiKV): Ledger {
     },
 
     getAggregates(): MonthlyAggregate[] {
-      return state.aggregates.map((aggregate) => ({ ...aggregate }));
+      return state.aggregates.map(aggregate => ({ ...aggregate }));
     },
 
     shouldRebuild(): boolean {
@@ -117,10 +134,19 @@ function loadLedgerState(kv: TuiKV): LoadResult {
   }
 
   try {
-    const aggregateProviders = readStringArray(kv.get(buildLedgerKey(currentMonth, 'meta', 'aggregateProviders'), []));
-    const processedFingerprints = readStringArray(kv.get(buildLedgerKey(currentMonth, 'meta', 'processedFingerprints'), []));
+    const aggregateProviders = readStringArray(
+      kv.get(buildLedgerKey(currentMonth, 'meta', 'aggregateProviders'), [])
+    );
+    const processedFingerprints = readStringArray(
+      kv.get(buildLedgerKey(currentMonth, 'meta', 'processedFingerprints'), [])
+    );
 
-    const aggregates = aggregateProviders.map((provider) => {
+    // Load fingerprintOrder - saved in reverse so first item is the newest
+    const fingerprintOrder = readStringArray(
+      kv.get(buildLedgerKey(currentMonth, 'meta', 'fingerprintOrder'), [])
+    ).reverse();
+
+    const aggregates = aggregateProviders.map(provider => {
       const aggregate = kv.get<unknown>(buildLedgerKey(currentMonth, 'aggregate', provider), null);
       return validateAggregate(aggregate, currentMonth);
     });
@@ -130,7 +156,9 @@ function loadLedgerState(kv: TuiKV): LoadResult {
         schemaVersion: LEDGER_SCHEMA_VERSION,
         currentMonth,
         aggregates,
+        // Use processedFingerprints array to build Set (fingerprintOrder may be empty/missing on reload)
         processedFingerprints: new Set(processedFingerprints),
+        fingerprintOrder,
       },
       shouldRebuild: false,
     };
@@ -145,7 +173,7 @@ function saveLedgerState(kv: TuiKV, state: LedgerState): void {
   kv.set(ACTIVE_MONTH_KEY, state.currentMonth);
   kv.set(buildLedgerKey(state.currentMonth, 'meta', 'lastRebuild'), Date.now());
 
-  const aggregateProviders = state.aggregates.map((aggregate) => aggregate.provider);
+  const aggregateProviders = state.aggregates.map(aggregate => aggregate.provider);
   kv.set(buildLedgerKey(state.currentMonth, 'meta', 'aggregateProviders'), aggregateProviders);
 
   for (const aggregate of state.aggregates) {
@@ -153,7 +181,16 @@ function saveLedgerState(kv: TuiKV, state: LedgerState): void {
   }
 
   const processedFingerprints = [...state.processedFingerprints];
-  kv.set(buildLedgerKey(state.currentMonth, 'meta', 'processedFingerprints'), processedFingerprints);
+  kv.set(
+    buildLedgerKey(state.currentMonth, 'meta', 'processedFingerprints'),
+    processedFingerprints
+  );
+
+  // Save fingerprintOrder in reverse so first item in storage is the newest
+  kv.set(
+    buildLedgerKey(state.currentMonth, 'meta', 'fingerprintOrder'),
+    [...state.fingerprintOrder].reverse()
+  );
 
   for (const fingerprint of processedFingerprints) {
     kv.set(buildLedgerKey(state.currentMonth, 'processed', fingerprint), true);
@@ -166,11 +203,12 @@ function createEmptyLedgerState(currentMonth: string): LedgerState {
     currentMonth,
     aggregates: [],
     processedFingerprints: new Set<string>(),
+    fingerprintOrder: [],
   };
 }
 
 function readStringArray(value: unknown): string[] {
-  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
+  if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
     throw new Error('Expected string array in KV ledger metadata.');
   }
 

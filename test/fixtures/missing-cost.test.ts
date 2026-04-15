@@ -16,16 +16,28 @@ describe('fixture: missing cost', () => {
     const result = await runFixture({
       title: 'missing-cost',
       description: 'Metered providers fall back to token-only display when cost is missing',
-      historyRecords: [{ provider: 'minimax', tokens: 400, cost: 0.5, timestamp: 501 }],
       liveRecords: [
+        { provider: 'minimax', tokens: 400, cost: 0.5, timestamp: 501 },
         { provider: 'minimax', tokens: 100, cost: null, timestamp: 502 },
         { provider: 'opencode-go', tokens: 600, cost: null, timestamp: 503 },
       ],
     });
 
     expect(result.viewModel.rows).toEqual([
-      expect.objectContaining({ bucket: 'minimax', tokens: 500, cost: null, costFormatted: null, showCost: false }),
-      expect.objectContaining({ bucket: 'opencode-go', tokens: 600, cost: null, costFormatted: null, showCost: false }),
+      expect.objectContaining({
+        bucket: 'minimax',
+        tokens: 500,
+        cost: null,
+        costFormatted: null,
+        showCost: false,
+      }),
+      expect.objectContaining({
+        bucket: 'opencode-go',
+        tokens: 600,
+        cost: null,
+        costFormatted: null,
+        showCost: false,
+      }),
       expect.objectContaining({ bucket: 'chatgpt-plus', tokens: 0, cost: null, showCost: false }),
     ]);
     expect(result.normalLines).toEqual(['MM  500', 'OCG  600', 'GPT+  0']);

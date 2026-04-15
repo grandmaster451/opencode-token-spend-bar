@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import * as historyScanner from '../../src/adapters/history-scanner';
 import { createAggregator, UsageAggregator } from '../../src/services/usage-aggregator';
 import { createLedger } from '../../src/state/kv-ledger';
 import { MockKV } from '../helpers/mock-kv';
@@ -16,37 +15,42 @@ describe('usage aggregator', () => {
     vi.restoreAllMocks();
   });
 
-  it('initializes from history when the ledger needs a rebuild', async () => {
+  it('initializes with empty state (session-only mode, no history loading)', async () => {
     const kv = new MockKV();
-    const scan = vi.spyOn(historyScanner, 'scanCurrentMonthHistory').mockReturnValue([
-      { provider: 'minimax', tokens: 1200, cost: 1.5, timestamp: 101 },
-      { provider: 'opencode-go', tokens: 3000, cost: 2.25, timestamp: 102 },
-    ]);
 
     const aggregator = createAggregator(kv);
     await aggregator.initialize();
 
-    expect(scan).toHaveBeenCalledOnce();
+    // Session-only: should start empty, not load history
     expect(aggregator.getViewModel()).toEqual({
       month: '2024-04',
+      heading: 'Usage',
       rows: [
         {
           bucket: 'minimax',
           label: 'MM',
-          tokens: 1200,
-          tokensFormatted: '1.2k',
-          cost: 1.5,
-          costFormatted: '$1.50',
-          showCost: true,
+          tokens: 0,
+          tokensFormatted: '0',
+          cost: null,
+          costFormatted: null,
+          showCost: false,
+          remaining: null,
+          remainingFormatted: '0',
+          percentage: null,
+          hasRemainingQuota: false,
         },
         {
           bucket: 'opencode-go',
           label: 'OCG',
-          tokens: 3000,
-          tokensFormatted: '3.0k',
-          cost: 2.25,
-          costFormatted: '$2.25',
-          showCost: true,
+          tokens: 0,
+          tokensFormatted: '0',
+          cost: null,
+          costFormatted: null,
+          showCost: false,
+          remaining: null,
+          remainingFormatted: '0',
+          percentage: null,
+          hasRemainingQuota: false,
         },
         {
           bucket: 'chatgpt-plus',
@@ -56,6 +60,10 @@ describe('usage aggregator', () => {
           cost: null,
           costFormatted: null,
           showCost: false,
+          remaining: null,
+          remainingFormatted: '0',
+          percentage: null,
+          hasRemainingQuota: false,
         },
       ],
     });
@@ -67,13 +75,36 @@ describe('usage aggregator', () => {
 
     aggregator.processRecord({ provider: 'minimax', tokens: 999, cost: 1.2, timestamp: 500 });
 
-    expect(new UsageAggregator(createLedger(kv), { currency: '€' }).getViewModel().rows[0]).toEqual({
+    expect(new UsageAggregator(createLedger(kv), { currency: '€' }).getViewModel().rows[0]).toEqual(
+      {
+        bucket: 'minimax',
+        label: 'MM',
+        tokens: 999,
+        tokensFormatted: '999',
+        cost: 1.2,
+        costFormatted: '€1.20',
+        showCost: true,
+        remaining: null,
+        remainingFormatted: '999',
+        percentage: null,
+        hasRemainingQuota: false,
+      }
+    );
+  });
+
+  it('accumulates tokens across multiple records in same session', () => {
+    const kv = new MockKV();
+    const aggregator = new UsageAggregator(createLedger(kv), { currency: '$' });
+
+    aggregator.processRecord({ provider: 'minimax', tokens: 1200, cost: 1.5, timestamp: 101 });
+    aggregator.processRecord({ provider: 'minimax', tokens: 3000, cost: 2.25, timestamp: 102 });
+
+    const viewModel = aggregator.getViewModel();
+    expect(viewModel.rows[0]).toMatchObject({
       bucket: 'minimax',
-      label: 'MM',
-      tokens: 999,
-      tokensFormatted: '999',
-      cost: 1.2,
-      costFormatted: '€1.20',
+      tokens: 4200,
+      tokensFormatted: '4 200',
+      cost: 3.75,
       showCost: true,
     });
   });
@@ -112,6 +143,7 @@ describe('usage aggregator', () => {
 
     expect(aggregator.getViewModel()).toEqual({
       month: '2024-04',
+      heading: 'Usage',
       rows: [
         {
           bucket: 'minimax',
@@ -121,6 +153,10 @@ describe('usage aggregator', () => {
           cost: null,
           costFormatted: null,
           showCost: false,
+          remaining: null,
+          remainingFormatted: '0',
+          percentage: null,
+          hasRemainingQuota: false,
         },
         {
           bucket: 'opencode-go',
@@ -130,6 +166,10 @@ describe('usage aggregator', () => {
           cost: null,
           costFormatted: null,
           showCost: false,
+          remaining: null,
+          remainingFormatted: '0',
+          percentage: null,
+          hasRemainingQuota: false,
         },
         {
           bucket: 'chatgpt-plus',
@@ -139,6 +179,10 @@ describe('usage aggregator', () => {
           cost: null,
           costFormatted: null,
           showCost: false,
+          remaining: null,
+          remainingFormatted: '0',
+          percentage: null,
+          hasRemainingQuota: false,
         },
       ],
     });
@@ -152,35 +196,54 @@ describe('usage aggregator', () => {
     aggregator.processRecord({ provider: 'opencode-go', tokens: 200, cost: 1.25, timestamp: 3 });
 
     expect(aggregator.getViewModel().rows).toEqual([
-      expect.objectContaining({ bucket: 'minimax', label: 'MM', tokens: 100, cost: 0.5, showCost: true }),
-      expect.objectContaining({ bucket: 'opencode-go', label: 'OCG', tokens: 200, cost: 1.25, showCost: true }),
-      expect.objectContaining({ bucket: 'chatgpt-plus', label: 'GPT+', tokens: 2500, cost: null, showCost: false }),
+      expect.objectContaining({
+        bucket: 'minimax',
+        label: 'MM',
+        tokens: 100,
+        cost: 0.5,
+        showCost: true,
+      }),
+      expect.objectContaining({
+        bucket: 'opencode-go',
+        label: 'OCG',
+        tokens: 200,
+        cost: 1.25,
+        showCost: true,
+      }),
+      expect.objectContaining({
+        bucket: 'chatgpt-plus',
+        label: 'GPT+',
+        tokens: 2500,
+        cost: null,
+        showCost: false,
+      }),
     ]);
   });
 
   it('rebuilds cleanly on month rollover', async () => {
     const kv = new MockKV();
-    vi.spyOn(historyScanner, 'scanCurrentMonthHistory').mockReturnValueOnce([
-      { provider: 'minimax', tokens: 1000, cost: 1, timestamp: 10 },
-    ]);
 
     const april = createAggregator(kv);
     await april.initialize();
+    // Session-only: starts empty
+    expect(april.getViewModel().rows[0]).toMatchObject({ tokens: 0, cost: null });
+
+    // Add some data in April
+    april.processRecord({ provider: 'minimax', tokens: 1000, cost: 1, timestamp: 10 });
     expect(april.getViewModel().rows[0]).toMatchObject({ tokens: 1000, cost: 1 });
 
     vi.setSystemTime(new Date('2024-05-01T00:00:00Z'));
-    vi.spyOn(historyScanner, 'scanCurrentMonthHistory').mockReturnValueOnce([
-      { provider: 'opencode-go', tokens: 500, cost: 2, timestamp: 20 },
-    ]);
 
     const may = createAggregator(kv);
     await may.initialize();
 
+    // Session-only: starts empty in new month too
     expect(may.getViewModel()).toEqual({
       month: '2024-05',
+      heading: 'Usage',
       rows: [
         expect.objectContaining({ bucket: 'minimax', tokens: 0, cost: null, showCost: false }),
-        expect.objectContaining({ bucket: 'opencode-go', tokens: 500, cost: 2 }),
+        expect.objectContaining({ bucket: 'opencode-go', tokens: 0, cost: null, showCost: false }),
         expect.objectContaining({ bucket: 'chatgpt-plus', tokens: 0, cost: null, showCost: false }),
       ],
     });

@@ -45,22 +45,38 @@ describe('integration: live event flow', () => {
       createAssistantMessage({
         providerID: 'minimax',
         cost: 0.45,
-        tokens: { total: 1200, input: 500, output: 700, reasoning: 0, cache: { read: 0, write: 0 } },
+        tokens: {
+          total: 1200,
+          input: 500,
+          output: 700,
+          reasoning: 0,
+          cache: { read: 0, write: 0 },
+        },
         time: { created: 10, completed: undefined },
-      }),
+      })
     );
 
-    expect(harness.getRenderRequestCount()).toBe(0);
-    expect(readViewModel(harness).rows[0]).toMatchObject({ tokens: 0, cost: null, showCost: false });
+    expect(harness.getRenderRequestCount()).toBe(1);
+    expect(readViewModel(harness).rows[0]).toMatchObject({
+      tokens: 0,
+      cost: null,
+      showCost: false,
+    });
 
     harness.emitMessageUpdated(
       createAssistantMessage({
         id: 'message-live-1',
         providerID: 'minimax',
         cost: 0.45,
-        tokens: { total: 1200, input: 500, output: 700, reasoning: 0, cache: { read: 0, write: 0 } },
+        tokens: {
+          total: 1200,
+          input: 500,
+          output: 700,
+          reasoning: 0,
+          cache: { read: 0, write: 0 },
+        },
         time: { created: 10, completed: 20 },
-      }),
+      })
     );
 
     expect(harness.getRenderRequestCount()).toBe(1);
@@ -68,7 +84,7 @@ describe('integration: live event flow', () => {
       bucket: 'minimax',
       label: 'MM',
       tokens: 1200,
-      tokensFormatted: '1.2k',
+      tokensFormatted: '1 200',
       cost: 0.45,
       costFormatted: '$0.45',
       showCost: true,
@@ -87,10 +103,14 @@ describe('integration: live event flow', () => {
         cost: 1,
         tokens: { total: 300, input: 100, output: 200, reasoning: 0, cache: { read: 0, write: 0 } },
         time: { created: 30, completed: 40 },
-      }),
+      })
     );
 
-    expect(harness.getRenderRequestCount()).toBe(0);
-    expect(readViewModel(harness).rows[0]).toMatchObject({ tokens: 0, cost: null, showCost: false });
+    expect(harness.getRenderRequestCount()).toBe(1);
+    expect(readViewModel(harness).rows[0]).toMatchObject({
+      tokens: 0,
+      cost: null,
+      showCost: false,
+    });
   });
 });

@@ -1,5 +1,19 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { BoxProps, TextProps, SpanProps, InputProps, SelectProps, ScrollBoxProps, CodeProps, MarkdownProps, TextareaProps, AsciiFontProps, TabSelectProps, ExtendedIntrinsicElements, OpenTUIComponents } from '@opentui/solid/src/types/elements';
+import type {
+  BoxProps,
+  TextProps,
+  SpanProps,
+  InputProps,
+  SelectProps,
+  ScrollBoxProps,
+  CodeProps,
+  MarkdownProps,
+  TextareaProps,
+  AsciiFontProps,
+  TabSelectProps,
+  ExtendedIntrinsicElements,
+  OpenTUIComponents,
+} from '@opentui/solid/src/types/elements';
 
 declare module 'solid-js' {
   namespace JSX {

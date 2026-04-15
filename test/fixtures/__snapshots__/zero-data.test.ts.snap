@@ -5,9 +5,9 @@ exports[`fixture: zero data > returns the stable empty widget state 1`] = `
 description=No historical or live usage produces the all-zero widget
 month=2024-04
 rows:
-minimax|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
-opencode-go|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
-chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false
+minimax|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
+opencode-go|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
+chatgpt-plus|tokens=0|tokensFormatted=0|cost=null|costFormatted=null|showCost=false|remaining=null|remainingFormatted=0|percentage=null
 normal:
 MM  0
 OCG  0

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
   test: {
@@ -10,8 +11,9 @@ export default defineConfig({
       exclude: ['node_modules/', 'dist/', 'test/fixtures/']
     }
   },
-  esbuild: {
-    jsx: 'preserve',
-    jsxImportSource: 'solid-js'
-  }
+  resolve: {
+    alias: {
+      '@opentui/solid': path.resolve(__dirname, 'test/__stubs__/opentui-solid.ts'),
+    },
+  },
 });

@@ -12,12 +12,18 @@ export function makeRow(overrides: Partial<ProviderRowViewModel> = {}): Provider
     cost: null,
     costFormatted: null,
     showCost: false,
+    remaining: null,
+    remainingFormatted: '0',
+    percentage: null,
+    hasRemainingQuota: false,
     ...overrides,
   };
 }
 
-export function readViewModel(harness: ReturnType<typeof createMockPluginHarness>): WidgetViewModel {
-  const rendered = harness.renderSessionPromptRight() as { kind: string; viewModel: WidgetViewModel };
+export function readViewModel(
+  harness: ReturnType<typeof createMockPluginHarness>
+): WidgetViewModel {
+  const rendered = harness.renderSidebarContent() as { kind: string; viewModel: WidgetViewModel };
   expect(rendered.kind).toBe('SessionSpendWidget');
   return rendered.viewModel;
 }

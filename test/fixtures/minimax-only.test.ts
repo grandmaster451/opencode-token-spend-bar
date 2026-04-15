@@ -16,7 +16,7 @@ describe('fixture: minimax only', () => {
     const result = await runFixture({
       title: 'minimax-only',
       description: 'Pure MiniMax usage with metered cost',
-      historyRecords: [
+      liveRecords: [
         { provider: 'minimax', tokens: 1200, cost: 0.45, timestamp: 101 },
         { provider: 'minimax', tokens: 800, cost: 0.35, timestamp: 102 },
       ],
@@ -27,7 +27,7 @@ describe('fixture: minimax only', () => {
       expect.objectContaining({ bucket: 'opencode-go', tokens: 0, cost: null, showCost: false }),
       expect.objectContaining({ bucket: 'chatgpt-plus', tokens: 0, cost: null, showCost: false }),
     ]);
-    expect(result.normalLines).toEqual(['MM  2.0k  $0.80', 'OCG  0', 'GPT+  0']);
+    expect(result.normalLines).toEqual(['MM  2 000  ($0.80)', 'OCG  0', 'GPT+  0']);
     expect(result.snapshot).toMatchSnapshot();
   });
 });

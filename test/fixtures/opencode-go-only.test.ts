@@ -12,11 +12,11 @@ describe('fixture: opencode-go only', () => {
     vi.restoreAllMocks();
   });
 
-  it('aggregates a pure OpenCode Go month', async () => {
+  it('aggregates a pure OpenCode Go session', async () => {
     const result = await runFixture({
       title: 'opencode-go-only',
-      description: 'Pure OpenCode Go usage with metered cost',
-      historyRecords: [
+      description: 'Pure OpenCode Go usage with metered cost (session-only)',
+      liveRecords: [
         { provider: 'opencode-go', tokens: 3000, cost: 2.25, timestamp: 201 },
         { provider: 'opencode-go', tokens: 500, cost: 0.15, timestamp: 202 },
       ],
@@ -27,7 +27,7 @@ describe('fixture: opencode-go only', () => {
       expect.objectContaining({ bucket: 'opencode-go', tokens: 3500, cost: 2.4, showCost: true }),
       expect.objectContaining({ bucket: 'chatgpt-plus', tokens: 0, cost: null, showCost: false }),
     ]);
-    expect(result.normalLines).toEqual(['MM  0', 'OCG  3.5k  $2.40', 'GPT+  0']);
+    expect(result.normalLines).toEqual(['MM  0', 'OCG  3 500  ($2.40)', 'GPT+  0']);
     expect(result.snapshot).toMatchSnapshot();
   });
 });

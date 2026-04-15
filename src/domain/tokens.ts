@@ -26,7 +26,7 @@ export function getTokenCount(tokens: TokenBreakdown | null | undefined): number
     tokens.reasoning,
     tokens.cache?.read,
     tokens.cache?.write,
-  ].map((value) => (typeof value === 'number' && Number.isFinite(value) ? value : 0));
+  ].map(value => (typeof value === 'number' && Number.isFinite(value) ? value : 0));
 
   return values.reduce((sum, value) => sum + value, 0);
 }

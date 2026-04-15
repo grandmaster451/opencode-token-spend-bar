@@ -18,7 +18,7 @@ describe('fixture: corrupt kv rebuild', () => {
     const result = await runFixture({
       title: 'corrupt-kv-rebuild',
       description: 'Corrupted KV state triggers a safe history rebuild',
-      historyRecords: [
+      liveRecords: [
         { provider: 'minimax', tokens: 900, cost: 0.9, timestamp: 801 },
         { provider: 'opencode-go', tokens: 300, cost: 1.1, timestamp: 802 },
       ],
